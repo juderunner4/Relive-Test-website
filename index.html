@@ -252,6 +252,10 @@
     /* Field error state */
     .field-error { border-color: #f87171 !important; }
 
+    /* Tab toggle */
+    .tab-btn { background: transparent; color: #A8A9AD; border: none; cursor: pointer; }
+    .tab-active { background: #C9A454 !important; color: #0A0A0A !important; font-weight: 700; }
+
   </style>
 </head>
 <body>
@@ -692,201 +696,298 @@
             </div>
           </div>
 
-          <!-- QR Code -->
-          <div class="mt-8 flex items-center gap-5">
-            <div class="p-2.5 bg-onyx-800 border border-gold-500/20 rounded-xl shadow-card flex-shrink-0" style="box-shadow: 0 0 0 1px rgba(201,164,84,0.06), 0 4px 20px rgba(0,0,0,0.4);">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=https://relivedetailing.com&color=C9A454&bgcolor=141414&margin=0" alt="Scan to visit Relive" class="w-[90px] h-[90px] rounded-lg block">
-            </div>
-            <div>
-              <div class="text-xs font-semibold tracking-[0.14em] uppercase text-gold-500 mb-1">Scan to visit</div>
-              <div class="text-white font-semibold text-sm">relivedetailing.com</div>
-              <div class="text-silver-500 text-xs mt-1 leading-[1.6]">Point your camera at the code<br>to open our website instantly.</div>
-            </div>
-          </div>
         </div>
 
         <!-- Right: Form -->
         <div class="bg-onyx-800/60 border border-gold-500/12 rounded-2xl p-8 shadow-card backdrop-blur-sm">
-          <h3 class="font-display text-white text-xl font-semibold mb-1" style="letter-spacing:-0.02em;">Book Your Appointment</h3>
-          <p class="text-silver-500 text-xs mb-6 leading-[1.6]">Fill in your details and I'll reach out to confirm your booking.</p>
-          <form id="bookingForm" class="flex flex-col gap-5" onsubmit="handleSubmit(event)" novalidate>
 
-            <!-- Name + Phone -->
-            <div class="grid sm:grid-cols-2 gap-5">
+          <!-- Tab Toggle -->
+          <div class="flex gap-1 p-1 bg-onyx-900/60 rounded-xl mb-6 border border-gold-500/10">
+            <button id="tab-quote" type="button" onclick="switchTab('quote')" class="tab-btn tab-active flex-1 text-xs font-semibold py-2.5 px-3 rounded-lg transition-colors duration-150 focus-visible:outline-none">Get a Quote</button>
+            <button id="tab-book" type="button" onclick="switchTab('book')" class="tab-btn flex-1 text-xs font-semibold py-2.5 px-3 rounded-lg transition-colors duration-150 focus-visible:outline-none">Request an Appointment</button>
+          </div>
+
+          <!-- ── QUOTE PANEL ── -->
+          <div id="quotePanel">
+            <h3 class="font-display text-white text-xl font-semibold mb-1" style="letter-spacing:-0.02em;">Get an Instant Quote</h3>
+            <p class="text-silver-500 text-xs mb-6 leading-[1.6]">Select your options and see an estimated price right away.</p>
+            <div class="flex flex-col gap-5">
+
+              <!-- Vehicle Size -->
               <div>
-                <label for="name" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Name <span class="text-gold-500">*</span></label>
-                <input id="name" type="text" placeholder="Your name" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 font-body"/>
-                <p id="err-name" class="hidden text-xs text-red-400 mt-1">Please enter your name.</p>
+                <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Vehicle Size</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="Sedan/Coupe" class="sr-only seg-radio"/><span class="seg-btn">Sedan / Coupe</span></label>
+                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="SUV/Crossover" class="sr-only seg-radio"/><span class="seg-btn">SUV / Crossover</span></label>
+                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="Truck" class="sr-only seg-radio"/><span class="seg-btn">Truck</span></label>
+                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="Van/Large SUV" class="sr-only seg-radio"/><span class="seg-btn">Van / Large SUV</span></label>
+                </div>
               </div>
+
+              <!-- Interior Condition -->
               <div>
-                <label for="phone" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Phone <span class="text-gold-500">*</span></label>
-                <input id="phone" type="tel" placeholder="(434) 000-0000" maxlength="14" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 font-body"/>
-                <p id="err-phone" class="hidden text-xs text-red-400 mt-1">Please enter a valid phone number.</p>
+                <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Interior Condition</label>
+                <div class="grid grid-cols-3 gap-2">
+                  <label class="seg-label"><input type="radio" name="q-interiorCondition" value="Light" class="sr-only seg-radio" onchange="calcQuote()"/><span class="seg-btn">Light</span></label>
+                  <label class="seg-label"><input type="radio" name="q-interiorCondition" value="Average" class="sr-only seg-radio" onchange="calcQuote()"/><span class="seg-btn">Average</span></label>
+                  <label class="seg-label"><input type="radio" name="q-interiorCondition" value="Heavy" class="sr-only seg-radio" onchange="calcQuote()"/><span class="seg-btn">Heavy</span></label>
+                </div>
+                <p class="text-silver-600 text-[10px] mt-1">Light = well kept · Average = normal use · Heavy = needs work</p>
               </div>
-            </div>
 
-            <!-- Email + Zip -->
-            <div class="grid sm:grid-cols-2 gap-5">
+              <!-- Package -->
               <div>
-                <label for="email" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Email <span class="text-gold-500">*</span></label>
-                <input id="email" type="email" placeholder="you@email.com" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 font-body"/>
-                <p id="err-email" class="hidden text-xs text-red-400 mt-1">Please enter a valid email address.</p>
+                <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Package</label>
+                <div class="grid sm:grid-cols-3 gap-3">
+                  <label class="service-pick-label">
+                    <input type="radio" name="q-service" value="Exterior Detail — $75" data-price="75" class="sr-only service-radio" onchange="calcQuote()"/>
+                    <span class="service-pick-card">
+                      <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Exterior Detail</span>
+                      <span class="text-gold-500 font-bold text-xl block mb-1">$75</span>
+                      <span class="text-silver-500 text-xs leading-snug">Full exterior wash, ceramic protection &amp; finish</span>
+                    </span>
+                  </label>
+                  <label class="service-pick-label">
+                    <input type="radio" name="q-service" value="Interior Detail — $95" data-price="95" class="sr-only service-radio" onchange="calcQuote()"/>
+                    <span class="service-pick-card">
+                      <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Interior Detail</span>
+                      <span class="text-gold-500 font-bold text-xl block mb-1">$95</span>
+                      <span class="text-silver-500 text-xs leading-snug">Complete interior clean, top to bottom</span>
+                    </span>
+                  </label>
+                  <label class="service-pick-label">
+                    <input type="radio" name="q-service" value="Full Detail — $160" data-price="160" class="sr-only service-radio" onchange="calcQuote()"/>
+                    <span class="service-pick-card">
+                      <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Full Detail</span>
+                      <span class="text-gold-500 font-bold text-xl block mb-1">$160</span>
+                      <span class="text-silver-500 text-xs leading-snug">Complete exterior + interior, inside &amp; out</span>
+                    </span>
+                  </label>
+                </div>
               </div>
+
+              <!-- Add-ons -->
               <div>
-                <label for="zip" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Zip Code <span class="text-gold-500">*</span></label>
-                <input id="zip" type="text" placeholder="24501" maxlength="5" inputmode="numeric" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 font-body"/>
-                <p id="err-zip" class="hidden text-xs text-red-400 mt-1">Please enter a 5-digit zip code.</p>
+                <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Add-ons <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
+                <div class="grid sm:grid-cols-2 gap-2">
+                  <label class="addon-label"><input type="checkbox" class="addon-check q-addon" value="25" onchange="calcQuote()"/> <span>Pet hair removal <span class="text-gold-500">+$25</span></span></label>
+                  <label class="addon-label"><input type="checkbox" class="addon-check q-addon" value="45" onchange="calcQuote()"/> <span>Heavy stains / biohazard <span class="text-gold-500">+$45</span></span></label>
+                  <label class="addon-label"><input type="checkbox" class="addon-check q-addon" value="30" onchange="calcQuote()"/> <span>Engine bay cleaning <span class="text-gold-500">+$30</span></span></label>
+                  <label class="addon-label"><input type="checkbox" class="addon-check q-addon" value="50" onchange="calcQuote()"/> <span>Clay bar treatment <span class="text-gold-500">+$50</span></span></label>
+                  <label class="addon-label"><input type="checkbox" class="addon-check q-addon" value="30" onchange="calcQuote()"/> <span>Leather conditioning <span class="text-gold-500">+$30</span></span></label>
+                </div>
               </div>
-            </div>
 
-            <!-- Vehicle -->
-            <div>
-              <label for="vehicle" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Vehicle <span class="text-gold-500">*</span></label>
-              <input id="vehicle" type="text" placeholder="2023 BMW M340i" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 font-body"/>
-              <p id="err-vehicle" class="hidden text-xs text-red-400 mt-1">Please enter your vehicle.</p>
-            </div>
-
-            <!-- Vehicle Size -->
-            <div>
-              <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Vehicle Size <span class="text-gold-500">*</span></label>
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <label class="seg-label"><input type="radio" name="vehicleSize" value="Sedan/Coupe" class="sr-only seg-radio"/><span class="seg-btn">Sedan / Coupe</span></label>
-                <label class="seg-label"><input type="radio" name="vehicleSize" value="SUV/Crossover" class="sr-only seg-radio"/><span class="seg-btn">SUV / Crossover</span></label>
-                <label class="seg-label"><input type="radio" name="vehicleSize" value="Truck" class="sr-only seg-radio"/><span class="seg-btn">Truck</span></label>
-                <label class="seg-label"><input type="radio" name="vehicleSize" value="Van/Large SUV" class="sr-only seg-radio"/><span class="seg-btn">Van / Large SUV</span></label>
+              <!-- Heavy condition note -->
+              <div id="heavyNote" class="hidden text-xs text-silver-500 bg-gold-500/5 border border-gold-500/12 rounded-lg px-4 py-2.5">
+                Heavy interior condition may include a <span class="text-gold-500 font-semibold">+$15 upcharge</span> — final price confirmed at booking.
               </div>
-              <p id="err-vehicleSize" class="hidden text-xs text-red-400 mt-1">Please select a vehicle size.</p>
-            </div>
 
-            <!-- Interior Condition -->
-            <div>
-              <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Interior Condition <span class="text-gold-500">*</span></label>
-              <div class="grid grid-cols-3 gap-2">
-                <label class="seg-label"><input type="radio" name="interiorCondition" value="Light" class="sr-only seg-radio"/><span class="seg-btn">Light</span></label>
-                <label class="seg-label"><input type="radio" name="interiorCondition" value="Average" class="sr-only seg-radio"/><span class="seg-btn">Average</span></label>
-                <label class="seg-label"><input type="radio" name="interiorCondition" value="Heavy" class="sr-only seg-radio"/><span class="seg-btn">Heavy</span></label>
+              <!-- Quote Result -->
+              <div id="quoteResultEmpty" class="rounded-xl border border-gold-500/10 bg-onyx-900/40 px-5 py-4 text-center">
+                <div class="text-silver-600 text-xs">Select a package above to see your estimate</div>
               </div>
-              <p class="text-silver-600 text-[10px] mt-1">Light = well kept · Average = normal use · Heavy = needs work</p>
-              <p id="err-interiorCondition" class="hidden text-xs text-red-400 mt-1">Please select interior condition.</p>
-            </div>
-
-            <!-- Service Cards -->
-            <div>
-              <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Service <span class="text-gold-500">*</span></label>
-              <div class="grid sm:grid-cols-3 gap-3">
-                <label class="service-pick-label">
-                  <input type="radio" name="service" value="Exterior Detail — $75" class="sr-only service-radio"/>
-                  <span class="service-pick-card">
-                    <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Exterior Detail</span>
-                    <span class="text-gold-500 font-bold text-xl block mb-1">$75</span>
-                    <span class="text-silver-500 text-xs leading-snug">Full exterior wash, ceramic protection &amp; finish</span>
-                  </span>
-                </label>
-                <label class="service-pick-label">
-                  <input type="radio" name="service" value="Interior Detail — $95" class="sr-only service-radio"/>
-                  <span class="service-pick-card">
-                    <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Interior Detail</span>
-                    <span class="text-gold-500 font-bold text-xl block mb-1">$95</span>
-                    <span class="text-silver-500 text-xs leading-snug">Complete interior clean, top to bottom</span>
-                  </span>
-                </label>
-                <label class="service-pick-label">
-                  <input type="radio" name="service" value="Full Detail — $160" class="sr-only service-radio"/>
-                  <span class="service-pick-card">
-                    <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Full Detail</span>
-                    <span class="text-gold-500 font-bold text-xl block mb-1">$160</span>
-                    <span class="text-silver-500 text-xs leading-snug">Complete exterior + interior, inside &amp; out</span>
-                  </span>
-                </label>
+              <div id="quoteResult" class="hidden rounded-xl border border-gold-500/20 bg-gold-500/5 px-5 py-4 flex items-center justify-between gap-4">
+                <div>
+                  <div class="text-xs font-semibold text-silver-400 tracking-wide uppercase mb-0.5">Estimated Total</div>
+                  <div class="text-[10px] text-silver-600 leading-snug">Final price confirmed at booking</div>
+                </div>
+                <div id="quotePrice" class="font-display text-gold-400 font-bold" style="font-size:2rem; letter-spacing:-0.04em; line-height:1;">—</div>
               </div>
-              <p id="err-service" class="hidden text-xs text-red-400 mt-1">Please select a service.</p>
-            </div>
 
-            <!-- Add-ons -->
-            <div>
-              <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Add-ons <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
-              <div class="grid sm:grid-cols-2 gap-2">
-                <label class="addon-label"><input type="checkbox" name="addons" value="Pet hair removal +$25" class="addon-check"/> <span>Pet hair removal <span class="text-gold-500">+$25</span></span></label>
-                <label class="addon-label"><input type="checkbox" name="addons" value="Heavy stains/biohazard +$45" class="addon-check"/> <span>Heavy stains / biohazard <span class="text-gold-500">+$45</span></span></label>
-                <label class="addon-label"><input type="checkbox" name="addons" value="Engine bay cleaning +$30" class="addon-check"/> <span>Engine bay cleaning <span class="text-gold-500">+$30</span></span></label>
-                <label class="addon-label"><input type="checkbox" name="addons" value="Clay bar treatment +$50" class="addon-check"/> <span>Clay bar treatment <span class="text-gold-500">+$50</span></span></label>
-                <label class="addon-label"><input type="checkbox" name="addons" value="Leather conditioning +$30" class="addon-check"/> <span>Leather conditioning <span class="text-gold-500">+$30</span></span></label>
+              <!-- CTA -->
+              <button type="button" id="bookFromQuoteBtn" onclick="bookFromQuote()" disabled class="gold-btn w-full font-semibold py-3.5 rounded-xl shadow-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 transition-opacity duration-200" style="opacity:0.45; cursor:not-allowed;">
+                Book This Package →
+              </button>
+            </div>
+          </div>
+
+          <!-- ── BOOKING PANEL ── -->
+          <div id="bookPanel" style="display:none;">
+            <h3 class="font-display text-white text-xl font-semibold mb-1" style="letter-spacing:-0.02em;">Request an Appointment</h3>
+            <p class="text-silver-500 text-xs mb-6 leading-[1.6]">Fill in your details and I'll reach out to confirm your time.</p>
+            <form id="bookingForm" class="flex flex-col gap-5" onsubmit="handleSubmit(event)" novalidate>
+
+              <!-- Name + Phone -->
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="name" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Name <span class="text-gold-500">*</span></label>
+                  <input id="name" type="text" placeholder="Your name" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 font-body"/>
+                  <p id="err-name" class="hidden text-xs text-red-400 mt-1">Please enter your name.</p>
+                </div>
+                <div>
+                  <label for="phone" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Phone <span class="text-gold-500">*</span></label>
+                  <input id="phone" type="tel" placeholder="(434) 000-0000" maxlength="14" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 font-body"/>
+                  <p id="err-phone" class="hidden text-xs text-red-400 mt-1">Please enter a valid phone number.</p>
+                </div>
               </div>
-            </div>
 
-            <!-- Date + Time -->
-            <div class="grid sm:grid-cols-2 gap-5">
+              <!-- Email + Zip -->
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="email" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Email <span class="text-gold-500">*</span></label>
+                  <input id="email" type="email" placeholder="you@email.com" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 font-body"/>
+                  <p id="err-email" class="hidden text-xs text-red-400 mt-1">Please enter a valid email address.</p>
+                </div>
+                <div>
+                  <label for="zip" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Zip Code <span class="text-gold-500">*</span></label>
+                  <input id="zip" type="text" placeholder="24501" maxlength="5" inputmode="numeric" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 font-body"/>
+                  <p id="err-zip" class="hidden text-xs text-red-400 mt-1">Please enter a 5-digit zip code.</p>
+                </div>
+              </div>
+
+              <!-- Vehicle -->
               <div>
-                <label for="preferredDate" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Preferred Date <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
-                <input id="preferredDate" type="date" class="w-full px-4 py-3 rounded-xl text-sm font-body"/>
+                <label for="vehicle" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Vehicle <span class="text-gold-500">*</span></label>
+                <input id="vehicle" type="text" placeholder="2023 BMW M340i" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 font-body"/>
+                <p id="err-vehicle" class="hidden text-xs text-red-400 mt-1">Please enter your vehicle.</p>
               </div>
+
+              <!-- Vehicle Size -->
               <div>
-                <label for="preferredTime" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Time Window <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
-                <select id="preferredTime" class="w-full px-4 py-3 rounded-xl text-sm cursor-pointer font-body appearance-none">
-                  <option value="">Flexible / any time</option>
-                  <option>Morning (8am – 12pm)</option>
-                  <option>Afternoon (12pm – 5pm)</option>
-                  <option>Evening (5pm – 8pm)</option>
+                <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Vehicle Size <span class="text-gold-500">*</span></label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <label class="seg-label"><input type="radio" name="vehicleSize" value="Sedan/Coupe" class="sr-only seg-radio"/><span class="seg-btn">Sedan / Coupe</span></label>
+                  <label class="seg-label"><input type="radio" name="vehicleSize" value="SUV/Crossover" class="sr-only seg-radio"/><span class="seg-btn">SUV / Crossover</span></label>
+                  <label class="seg-label"><input type="radio" name="vehicleSize" value="Truck" class="sr-only seg-radio"/><span class="seg-btn">Truck</span></label>
+                  <label class="seg-label"><input type="radio" name="vehicleSize" value="Van/Large SUV" class="sr-only seg-radio"/><span class="seg-btn">Van / Large SUV</span></label>
+                </div>
+                <p id="err-vehicleSize" class="hidden text-xs text-red-400 mt-1">Please select a vehicle size.</p>
+              </div>
+
+              <!-- Interior Condition -->
+              <div>
+                <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Interior Condition <span class="text-gold-500">*</span></label>
+                <div class="grid grid-cols-3 gap-2">
+                  <label class="seg-label"><input type="radio" name="interiorCondition" value="Light" class="sr-only seg-radio"/><span class="seg-btn">Light</span></label>
+                  <label class="seg-label"><input type="radio" name="interiorCondition" value="Average" class="sr-only seg-radio"/><span class="seg-btn">Average</span></label>
+                  <label class="seg-label"><input type="radio" name="interiorCondition" value="Heavy" class="sr-only seg-radio"/><span class="seg-btn">Heavy</span></label>
+                </div>
+                <p class="text-silver-600 text-[10px] mt-1">Light = well kept · Average = normal use · Heavy = needs work</p>
+                <p id="err-interiorCondition" class="hidden text-xs text-red-400 mt-1">Please select interior condition.</p>
+              </div>
+
+              <!-- Service Cards -->
+              <div>
+                <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Service <span class="text-gold-500">*</span></label>
+                <div class="grid sm:grid-cols-3 gap-3">
+                  <label class="service-pick-label">
+                    <input type="radio" name="service" value="Exterior Detail — $75" class="sr-only service-radio"/>
+                    <span class="service-pick-card">
+                      <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Exterior Detail</span>
+                      <span class="text-gold-500 font-bold text-xl block mb-1">$75</span>
+                      <span class="text-silver-500 text-xs leading-snug">Full exterior wash, ceramic protection &amp; finish</span>
+                    </span>
+                  </label>
+                  <label class="service-pick-label">
+                    <input type="radio" name="service" value="Interior Detail — $95" class="sr-only service-radio"/>
+                    <span class="service-pick-card">
+                      <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Interior Detail</span>
+                      <span class="text-gold-500 font-bold text-xl block mb-1">$95</span>
+                      <span class="text-silver-500 text-xs leading-snug">Complete interior clean, top to bottom</span>
+                    </span>
+                  </label>
+                  <label class="service-pick-label">
+                    <input type="radio" name="service" value="Full Detail — $160" class="sr-only service-radio"/>
+                    <span class="service-pick-card">
+                      <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Full Detail</span>
+                      <span class="text-gold-500 font-bold text-xl block mb-1">$160</span>
+                      <span class="text-silver-500 text-xs leading-snug">Complete exterior + interior, inside &amp; out</span>
+                    </span>
+                  </label>
+                </div>
+                <p id="err-service" class="hidden text-xs text-red-400 mt-1">Please select a service.</p>
+              </div>
+
+              <!-- Add-ons -->
+              <div>
+                <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Add-ons <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
+                <div class="grid sm:grid-cols-2 gap-2">
+                  <label class="addon-label"><input type="checkbox" name="addons" value="Pet hair removal +$25" class="addon-check"/> <span>Pet hair removal <span class="text-gold-500">+$25</span></span></label>
+                  <label class="addon-label"><input type="checkbox" name="addons" value="Heavy stains/biohazard +$45" class="addon-check"/> <span>Heavy stains / biohazard <span class="text-gold-500">+$45</span></span></label>
+                  <label class="addon-label"><input type="checkbox" name="addons" value="Engine bay cleaning +$30" class="addon-check"/> <span>Engine bay cleaning <span class="text-gold-500">+$30</span></span></label>
+                  <label class="addon-label"><input type="checkbox" name="addons" value="Clay bar treatment +$50" class="addon-check"/> <span>Clay bar treatment <span class="text-gold-500">+$50</span></span></label>
+                  <label class="addon-label"><input type="checkbox" name="addons" value="Leather conditioning +$30" class="addon-check"/> <span>Leather conditioning <span class="text-gold-500">+$30</span></span></label>
+                </div>
+              </div>
+
+              <!-- Date + Time (dynamic — populated from Google Sheet availability) -->
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Preferred Date <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
+                  <div id="datePickerWrap">
+                    <select id="preferredDate" class="w-full px-4 py-3 rounded-xl text-sm cursor-pointer font-body appearance-none">
+                      <option value="">Loading availability…</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Preferred Time <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
+                  <div id="timePickerWrap">
+                    <select id="preferredTime" class="w-full px-4 py-3 rounded-xl text-sm cursor-pointer font-body appearance-none" disabled>
+                      <option value="">Select a date first</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- How did you hear -->
+              <div>
+                <label for="heardAbout" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">How did you hear about us? <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
+                <select id="heardAbout" class="w-full px-4 py-3 rounded-xl text-sm cursor-pointer font-body appearance-none">
+                  <option value="">Select…</option>
+                  <option>Google search</option>
+                  <option>Google Maps / Business Profile</option>
+                  <option>Instagram</option>
+                  <option>Facebook</option>
+                  <option>Nextdoor</option>
+                  <option>Friend / referral</option>
+                  <option>Saw the van / in person</option>
+                  <option>Other</option>
                 </select>
               </div>
+
+              <!-- Message -->
+              <div>
+                <label for="message" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Message <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
+                <textarea id="message" rows="3" placeholder="Anything else I should know…" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 resize-none font-body"></textarea>
+              </div>
+
+              <!-- SMS Consent -->
+              <div>
+                <label class="flex items-start gap-3 cursor-pointer group">
+                  <input id="smsConsent" type="checkbox" class="mt-0.5 flex-shrink-0 w-4 h-4 rounded accent-gold cursor-pointer"/>
+                  <span class="text-xs text-silver-500 leading-[1.65]">I agree Relive Mobile Detailing can text or call me about my booking and occasional offers. Message &amp; data rates may apply. Reply STOP to opt out. <span class="text-gold-500">*</span></span>
+                </label>
+                <p id="err-smsConsent" class="hidden text-xs text-red-400 mt-1">Please agree to receive communications to continue.</p>
+              </div>
+
+              <!-- Top-level error banner -->
+              <div id="formError" class="hidden text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2.5">Please fill in all required fields marked with <span class="text-gold-500">*</span> before submitting.</div>
+
+              <!-- Submit -->
+              <button type="submit" id="submitBtn" class="gold-btn w-full font-semibold py-3.5 rounded-xl shadow-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-onyx-900 transition-opacity duration-200">
+                Request Booking
+              </button>
+
+              <div class="text-center">
+                <p class="text-xs text-silver-400/70 leading-[1.6]">You will receive a <strong class="text-gold-500">call or text</strong> to confirm your appointment.</p>
+                <p class="text-xs text-silver-500/50 mt-1">Prefer to call or text? <a href="tel:4345151695" class="text-gold-500 hover:text-gold-400 transition-colors duration-200">(434) 515-1695</a></p>
+              </div>
+            </form>
+
+            <!-- Success screen (hidden until submit) -->
+            <div id="successScreen" class="hidden text-center py-8">
+              <div class="w-14 h-14 rounded-full bg-gold-500/15 border border-gold-500/30 flex items-center justify-center mx-auto mb-5">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A454" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <h4 class="font-display text-white text-2xl font-semibold mb-2" style="letter-spacing:-0.02em;">Booking Request Sent</h4>
+              <p class="text-silver-400 text-sm leading-[1.75] mb-6 max-w-xs mx-auto">We'll review your request and get back to you within the hour.</p>
+              <a href="sms:+14345151695" class="outline-btn inline-flex items-center gap-2 font-medium text-sm px-6 py-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                Text us photos of your vehicle
+              </a>
             </div>
-
-            <!-- How did you hear -->
-            <div>
-              <label for="heardAbout" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">How did you hear about us? <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
-              <select id="heardAbout" class="w-full px-4 py-3 rounded-xl text-sm cursor-pointer font-body appearance-none">
-                <option value="">Select…</option>
-                <option>Google search</option>
-                <option>Google Maps / Business Profile</option>
-                <option>Instagram</option>
-                <option>Facebook</option>
-                <option>Nextdoor</option>
-                <option>Friend / referral</option>
-                <option>Saw the van / in person</option>
-                <option>Other</option>
-              </select>
-            </div>
-
-            <!-- Message -->
-            <div>
-              <label for="message" class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Message <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
-              <textarea id="message" rows="3" placeholder="Anything else I should know…" class="w-full px-4 py-3 rounded-xl text-sm placeholder:text-silver-500/30 resize-none font-body"></textarea>
-            </div>
-
-            <!-- SMS Consent -->
-            <div>
-              <label class="flex items-start gap-3 cursor-pointer group">
-                <input id="smsConsent" type="checkbox" class="mt-0.5 flex-shrink-0 w-4 h-4 rounded accent-gold cursor-pointer"/>
-                <span class="text-xs text-silver-500 leading-[1.65]">I agree Relive Mobile Detailing can text or call me about my booking and occasional offers. Message &amp; data rates may apply. Reply STOP to opt out. <span class="text-gold-500">*</span></span>
-              </label>
-              <p id="err-smsConsent" class="hidden text-xs text-red-400 mt-1">Please agree to receive communications to continue.</p>
-            </div>
-
-            <!-- Top-level error banner -->
-            <div id="formError" class="hidden text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2.5">Please fill in all required fields marked with <span class="text-gold-500">*</span> before submitting.</div>
-
-            <!-- Submit -->
-            <button type="submit" id="submitBtn" class="gold-btn w-full font-semibold py-3.5 rounded-xl shadow-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-onyx-900 transition-opacity duration-200">
-              Request Booking
-            </button>
-
-            <div class="text-center">
-              <p class="text-xs text-silver-400/70 leading-[1.6]">You will receive a <strong class="text-gold-500">call or text</strong> to confirm your appointment.</p>
-              <p class="text-xs text-silver-500/50 mt-1">Prefer to call or text? <a href="tel:4345151695" class="text-gold-500 hover:text-gold-400 transition-colors duration-200">(434) 515-1695</a></p>
-            </div>
-          </form>
-
-          <!-- Success screen (hidden until submit) -->
-          <div id="successScreen" class="hidden text-center py-8">
-            <div class="w-14 h-14 rounded-full bg-gold-500/15 border border-gold-500/30 flex items-center justify-center mx-auto mb-5">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A454" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <h4 class="font-display text-white text-2xl font-semibold mb-2" style="letter-spacing:-0.02em;">Booking Request Sent</h4>
-            <p class="text-silver-400 text-sm leading-[1.75] mb-6 max-w-xs mx-auto">We'll review your request and get back to you within the hour.</p>
-            <a href="sms:+14345151695" class="outline-btn inline-flex items-center gap-2 font-medium text-sm px-6 py-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-              Text us photos of your vehicle
-            </a>
           </div>
         </div>
       </div>
@@ -998,6 +1099,110 @@
       if (errEl) errEl.classList.add('hidden');
       if (inputEl) inputEl.classList.remove('field-error');
     }
+
+    // ── Tab switching ────────────────────────────────────────────────────────
+    function switchTab(tab) {
+      var isQuote = tab === 'quote';
+      document.getElementById('quotePanel').style.display = isQuote ? 'block' : 'none';
+      document.getElementById('bookPanel').style.display  = isQuote ? 'none'  : 'block';
+      document.getElementById('tab-quote').classList.toggle('tab-active', isQuote);
+      document.getElementById('tab-book').classList.toggle('tab-active', !isQuote);
+    }
+
+    // ── Quote calculator ─────────────────────────────────────────────────────
+    function calcQuote() {
+      var svcEl   = document.querySelector('input[name="q-service"]:checked');
+      var condEl  = document.querySelector('input[name="q-interiorCondition"]:checked');
+      var addons  = document.querySelectorAll('.q-addon:checked');
+      var result  = document.getElementById('quoteResult');
+      var empty   = document.getElementById('quoteResultEmpty');
+      var priceEl = document.getElementById('quotePrice');
+      var noteEl  = document.getElementById('heavyNote');
+      var bookBtn = document.getElementById('bookFromQuoteBtn');
+
+      if (!svcEl) {
+        result.classList.add('hidden'); empty.classList.remove('hidden');
+        noteEl.classList.add('hidden');
+        bookBtn.disabled = true; bookBtn.style.opacity = '0.45'; bookBtn.style.cursor = 'not-allowed';
+        return;
+      }
+
+      var base  = parseInt(svcEl.dataset.price, 10);
+      var addon = 0; addons.forEach(function(el) { addon += parseInt(el.value, 10); });
+      var isHeavy    = condEl && condEl.value === 'Heavy';
+      var svcVal     = svcEl.value;
+      var heavyExtra = (isHeavy && (svcVal.indexOf('Interior') !== -1 || svcVal.indexOf('Full') !== -1)) ? 15 : 0;
+
+      priceEl.textContent = '$' + (base + addon + heavyExtra);
+      result.classList.remove('hidden'); empty.classList.add('hidden');
+      noteEl.classList.toggle('hidden', heavyExtra === 0);
+      bookBtn.disabled = false; bookBtn.style.opacity = ''; bookBtn.style.cursor = '';
+    }
+
+    function bookFromQuote() {
+      var svcEl = document.querySelector('input[name="q-service"]:checked');
+      if (!svcEl) return;
+      switchTab('book');
+      var target = document.querySelector('input[name="service"][value="' + svcEl.value + '"]');
+      if (target) { target.checked = true; clearErr('service'); }
+      document.getElementById('bookPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ── Availability (populated from Google Sheet via Apps Script doGet) ──────
+    var availabilityData = {};
+
+    function loadAvailability() {
+      fetch(ENDPOINT_URL)
+        .then(function(r) { return r.json(); })
+        .then(function(data) { availabilityData = data; populateDateSelect(data); })
+        .catch(showFallbackDatePicker);
+    }
+
+    function populateDateSelect(data) {
+      var sel   = document.getElementById('preferredDate');
+      var dates = Object.keys(data).sort();
+      if (dates.length === 0) { showFallbackDatePicker(); return; }
+      sel.innerHTML = '<option value="">Select a date\u2026</option>';
+      dates.forEach(function(d) {
+        var dt    = new Date(d + 'T12:00:00');
+        var label = dt.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+        var opt   = document.createElement('option');
+        opt.value = d; opt.textContent = label;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener('change', function() { populateTimeSelect(this.value); });
+    }
+
+    function populateTimeSelect(date) {
+      var sel = document.getElementById('preferredTime');
+      if (!date || !availabilityData[date]) {
+        sel.innerHTML = '<option value="">Select a date first</option>';
+        sel.disabled = true; return;
+      }
+      sel.disabled = false;
+      sel.innerHTML = '<option value="">Select a time\u2026</option>';
+      availabilityData[date].forEach(function(slot) {
+        var opt = document.createElement('option');
+        opt.value = slot; opt.textContent = slot;
+        sel.appendChild(opt);
+      });
+    }
+
+    function showFallbackDatePicker() {
+      var today = new Date().toISOString().split('T')[0];
+      document.getElementById('datePickerWrap').innerHTML =
+        '<input id="preferredDate" type="date" min="' + today + '" class="w-full px-4 py-3 rounded-xl text-sm font-body"/>' +
+        '<p class="text-silver-600 text-[10px] mt-1">We\'ll confirm your time after booking.</p>';
+      document.getElementById('timePickerWrap').innerHTML =
+        '<select id="preferredTime" class="w-full px-4 py-3 rounded-xl text-sm cursor-pointer font-body appearance-none">' +
+        '<option value="">Flexible / any time</option>' +
+        '<option>Morning (8am \u2013 12pm)</option>' +
+        '<option>Afternoon (12pm \u2013 5pm)</option>' +
+        '<option>Evening (5pm \u2013 8pm)</option>' +
+        '</select>';
+    }
+
+    loadAvailability();
 
     // ── Form submit ──────────────────────────────────────────────────────────
     function handleSubmit(e) {
