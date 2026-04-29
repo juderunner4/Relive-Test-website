@@ -256,6 +256,13 @@
     .tab-btn { background: transparent; color: #A8A9AD; border: none; cursor: pointer; }
     .tab-active { background: #C9A454 !important; color: #0A0A0A !important; font-weight: 700; }
 
+    /* Calendar picker */
+    .cal-day { text-align:center; padding:0.35rem 0.15rem; font-size:0.72rem; border-radius:0.45rem; color:#3A3A3A; user-select:none; }
+    .cal-day.avail { color:#F0EDE6; cursor:pointer; }
+    .cal-day.avail:hover { background:rgba(201,164,84,0.18); color:#C9A454; }
+    .cal-day.selected { background:#C9A454; color:#0A0A0A; font-weight:700; }
+    .cal-day.is-today { color:#C9A454; font-weight:600; }
+
   </style>
 </head>
 <body>
@@ -691,7 +698,7 @@
               </div>
               <div>
                 <div class="text-xs text-silver-500 font-medium mb-0.5 tracking-wide">Availability</div>
-                <div class="text-white font-semibold">7 Days a Week, By Appointment</div>
+                <div class="text-white font-semibold">Mon – Sat, By Appointment</div>
               </div>
             </div>
           </div>
@@ -717,10 +724,10 @@
               <div>
                 <label class="block text-xs font-semibold text-silver-400 mb-2 tracking-wide uppercase">Vehicle Size</label>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="Sedan/Coupe" class="sr-only seg-radio"/><span class="seg-btn">Sedan / Coupe</span></label>
-                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="SUV/Crossover" class="sr-only seg-radio"/><span class="seg-btn">SUV / Crossover</span></label>
-                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="Truck" class="sr-only seg-radio"/><span class="seg-btn">Truck</span></label>
-                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="Van/Large SUV" class="sr-only seg-radio"/><span class="seg-btn">Van / Large SUV</span></label>
+                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="Sedan/Coupe" class="sr-only seg-radio" onchange="calcQuote()"/><span class="seg-btn">Sedan / Coupe</span></label>
+                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="SUV/Crossover" class="sr-only seg-radio" onchange="calcQuote()"/><span class="seg-btn">SUV / Crossover</span></label>
+                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="Truck" class="sr-only seg-radio" onchange="calcQuote()"/><span class="seg-btn">Truck</span></label>
+                  <label class="seg-label"><input type="radio" name="q-vehicleSize" value="Van/Large SUV" class="sr-only seg-radio" onchange="calcQuote()"/><span class="seg-btn">Van / Large SUV</span></label>
                 </div>
               </div>
 
@@ -752,7 +759,7 @@
                     <span class="service-pick-card">
                       <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Interior Detail</span>
                       <span class="text-gold-500 font-bold text-xl block mb-1">$95</span>
-                      <span class="text-silver-500 text-xs leading-snug">Complete interior clean, top to bottom</span>
+                      <span class="text-silver-500 text-xs leading-snug">Vacuum, wipe-down, windows, and fresh scent finish</span>
                     </span>
                   </label>
                   <label class="service-pick-label">
@@ -884,7 +891,7 @@
                     <span class="service-pick-card">
                       <span class="font-display text-white text-base font-semibold block mb-0.5" style="font-style:italic;">Interior Detail</span>
                       <span class="text-gold-500 font-bold text-xl block mb-1">$95</span>
-                      <span class="text-silver-500 text-xs leading-snug">Complete interior clean, top to bottom</span>
+                      <span class="text-silver-500 text-xs leading-snug">Vacuum, wipe-down, windows, and fresh scent finish</span>
                     </span>
                   </label>
                   <label class="service-pick-label">
@@ -916,9 +923,25 @@
                 <div>
                   <label class="block text-xs font-semibold text-silver-400 mb-1.5 tracking-wide uppercase">Preferred Date <span class="text-silver-600 normal-case font-normal">(optional)</span></label>
                   <div id="datePickerWrap">
-                    <select id="preferredDate" class="w-full px-4 py-3 rounded-xl text-sm cursor-pointer font-body appearance-none">
-                      <option value="">Loading availability…</option>
-                    </select>
+                    <div id="calendarPicker" class="rounded-xl border border-gold-500/20 bg-onyx-900/60 overflow-hidden">
+                      <div class="flex items-center justify-between px-3 py-2 border-b border-gold-500/10">
+                        <button type="button" id="calPrev" class="w-7 h-7 flex items-center justify-center rounded-lg text-silver-400 hover:text-gold-500 hover:bg-gold-500/10 transition-colors duration-150 focus-visible:outline-none text-lg leading-none">‹</button>
+                        <span id="calMonthLabel" class="text-white font-semibold text-xs tracking-wide"></span>
+                        <button type="button" id="calNext" class="w-7 h-7 flex items-center justify-center rounded-lg text-silver-400 hover:text-gold-500 hover:bg-gold-500/10 transition-colors duration-150 focus-visible:outline-none text-lg leading-none">›</button>
+                      </div>
+                      <div class="grid grid-cols-7 text-center px-2 pt-1.5 pb-0.5">
+                        <span class="text-[9px] text-silver-600 font-semibold">Su</span>
+                        <span class="text-[9px] text-silver-600 font-semibold">Mo</span>
+                        <span class="text-[9px] text-silver-600 font-semibold">Tu</span>
+                        <span class="text-[9px] text-silver-600 font-semibold">We</span>
+                        <span class="text-[9px] text-silver-600 font-semibold">Th</span>
+                        <span class="text-[9px] text-silver-600 font-semibold">Fr</span>
+                        <span class="text-[9px] text-silver-600 font-semibold">Sa</span>
+                      </div>
+                      <div id="calGrid" class="grid grid-cols-7 px-2 pb-2"></div>
+                    </div>
+                    <input type="hidden" id="preferredDate" value=""/>
+                    <div id="calSelectedDisplay" class="hidden text-xs text-gold-500 mt-1.5 font-medium"></div>
                   </div>
                 </div>
                 <div>
@@ -1018,7 +1041,7 @@
           <div class="flex flex-col gap-2 text-sm text-silver-500">
             <a href="tel:4345151695" class="hover:text-gold-500 transition-colors duration-200">(434) 515-1695</a>
             <span>Lynchburg, VA</span>
-            <span>7 Days a Week, By Appointment</span>
+            <span>Mon – Sat, By Appointment</span>
           </div>
           <div class="mt-5">
             <div class="text-white font-semibold text-sm mb-3 tracking-wide">Follow Us</div>
@@ -1110,9 +1133,12 @@
     }
 
     // ── Quote calculator ─────────────────────────────────────────────────────
+    var vehicleSizeUpcharge = { 'Sedan/Coupe': 0, 'SUV/Crossover': 15, 'Truck': 20, 'Van/Large SUV': 25 };
+
     function calcQuote() {
       var svcEl   = document.querySelector('input[name="q-service"]:checked');
       var condEl  = document.querySelector('input[name="q-interiorCondition"]:checked');
+      var sizeEl  = document.querySelector('input[name="q-vehicleSize"]:checked');
       var addons  = document.querySelectorAll('.q-addon:checked');
       var result  = document.getElementById('quoteResult');
       var empty   = document.getElementById('quoteResultEmpty');
@@ -1127,13 +1153,14 @@
         return;
       }
 
-      var base  = parseInt(svcEl.dataset.price, 10);
-      var addon = 0; addons.forEach(function(el) { addon += parseInt(el.value, 10); });
+      var base       = parseInt(svcEl.dataset.price, 10);
+      var sizeExtra  = sizeEl ? (vehicleSizeUpcharge[sizeEl.value] || 0) : 0;
+      var addon      = 0; addons.forEach(function(el) { addon += parseInt(el.value, 10); });
       var isHeavy    = condEl && condEl.value === 'Heavy';
       var svcVal     = svcEl.value;
       var heavyExtra = (isHeavy && (svcVal.indexOf('Interior') !== -1 || svcVal.indexOf('Full') !== -1)) ? 15 : 0;
 
-      priceEl.textContent = '$' + (base + addon + heavyExtra);
+      priceEl.textContent = '$' + (base + sizeExtra + addon + heavyExtra);
       result.classList.remove('hidden'); empty.classList.add('hidden');
       noteEl.classList.toggle('hidden', heavyExtra === 0);
       bookBtn.disabled = false; bookBtn.style.opacity = ''; bookBtn.style.cursor = '';
@@ -1148,29 +1175,75 @@
       document.getElementById('bookPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // ── Availability (populated from Google Sheet via Apps Script doGet) ──────
+    // ── Availability + Calendar ───────────────────────────────────────────────
     var availabilityData = {};
+    var calYear, calMonth, calSelected;
 
     function loadAvailability() {
       fetch(ENDPOINT_URL)
         .then(function(r) { return r.json(); })
-        .then(function(data) { availabilityData = data; populateDateSelect(data); })
+        .then(function(data) {
+          availabilityData = data;
+          var dates = Object.keys(data).sort();
+          if (dates.length === 0) { showFallbackDatePicker(); return; }
+          initCalendar();
+        })
         .catch(showFallbackDatePicker);
     }
 
-    function populateDateSelect(data) {
-      var sel   = document.getElementById('preferredDate');
-      var dates = Object.keys(data).sort();
-      if (dates.length === 0) { showFallbackDatePicker(); return; }
-      sel.innerHTML = '<option value="">Select a date\u2026</option>';
-      dates.forEach(function(d) {
-        var dt    = new Date(d + 'T12:00:00');
-        var label = dt.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
-        var opt   = document.createElement('option');
-        opt.value = d; opt.textContent = label;
-        sel.appendChild(opt);
+    function initCalendar() {
+      var now = new Date();
+      calYear  = now.getFullYear();
+      calMonth = now.getMonth();
+      renderCalendar();
+      document.getElementById('calPrev').addEventListener('click', function() {
+        calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar();
       });
-      sel.addEventListener('change', function() { populateTimeSelect(this.value); });
+      document.getElementById('calNext').addEventListener('click', function() {
+        calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCalendar();
+      });
+    }
+
+    function renderCalendar() {
+      var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('calMonthLabel').textContent = MONTHS[calMonth] + ' ' + calYear;
+      var grid = document.getElementById('calGrid');
+      grid.innerHTML = '';
+      var firstDay    = new Date(calYear, calMonth, 1).getDay();
+      var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      var today       = new Date(); today.setHours(0,0,0,0);
+
+      for (var i = 0; i < firstDay; i++) {
+        var empty = document.createElement('div'); empty.className = 'cal-day'; grid.appendChild(empty);
+      }
+      for (var d = 1; d <= daysInMonth; d++) {
+        var mm  = String(calMonth + 1).padStart(2, '0');
+        var dd  = String(d).padStart(2, '0');
+        var key = calYear + '-' + mm + '-' + dd;
+        var dateObj = new Date(calYear, calMonth, d);
+        var cell = document.createElement('div');
+        cell.textContent = d;
+        cell.className   = 'cal-day';
+        if (key === calSelected)                                   cell.classList.add('selected');
+        else if (availabilityData[key] && dateObj >= today)        cell.classList.add('avail');
+        else if (dateObj.getTime() === today.getTime())            cell.classList.add('is-today');
+        if (availabilityData[key] && dateObj >= today) {
+          (function(k) {
+            cell.addEventListener('click', function() {
+              calSelected = k;
+              document.getElementById('preferredDate').value = k;
+              var dt    = new Date(k + 'T12:00:00');
+              var label = dt.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+              var disp  = document.getElementById('calSelectedDisplay');
+              disp.textContent = 'Selected: ' + label;
+              disp.classList.remove('hidden');
+              populateTimeSelect(k);
+              renderCalendar();
+            });
+          })(key);
+        }
+        grid.appendChild(cell);
+      }
     }
 
     function populateTimeSelect(date) {
