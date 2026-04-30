@@ -270,13 +270,11 @@
     .reveal-d3 { transition-delay: 0.30s; }
     .reveal-d4 { transition-delay: 0.40s; }
 
-    /* ── Car outline draw ────────────────────────────────────────────────── */
-    .car-stroke {
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
-      animation: car-draw 2.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+    /* ── Car image fade-in ───────────────────────────────────────────────── */
+    @keyframes car-fade {
+      0%   { opacity: 0; transform: translateX(30px); }
+      100% { opacity: 0.55; transform: translateX(0); }
     }
-    @keyframes car-draw { to { stroke-dashoffset: 0; } }
 
     /* Calendar picker */
     .cal-day { text-align:center; padding:0.35rem 0.15rem; font-size:0.72rem; border-radius:0.45rem; color:#3A3A3A; user-select:none; }
@@ -389,37 +387,9 @@
       </div>
     </div>
 
-    <!-- Car outline -->
-    <div class="absolute bottom-10 left-0 right-0 flex justify-center pointer-events-none select-none" style="opacity:0.13;">
-      <svg class="w-full max-w-3xl px-8" viewBox="0 0 600 155" fill="none" stroke="#C9A454" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-        <!-- Body silhouette -->
-        <path pathLength="1" class="car-stroke" stroke-width="1.4" d="M72 118 L72 104 Q75 88 93 77 L160 50 Q190 32 232 30 L362 30 Q402 32 428 50 L492 80 Q512 91 518 107 L520 118"/>
-        <!-- Chassis bottom -->
-        <path pathLength="1" class="car-stroke" stroke-width="1.4" d="M72 118 L96 123 L162 126 L178 118 L414 118 L430 126 L496 123 L520 118"/>
-        <!-- Side glass -->
-        <path pathLength="1" class="car-stroke" stroke-width="1.2" d="M172 78 L200 44 Q218 32 252 30 L348 30 Q372 30 386 44 L416 78 Z"/>
-        <!-- B-pillar -->
-        <path pathLength="1" class="car-stroke" stroke-width="1.1" d="M292 78 L292 118"/>
-        <!-- Front wheel arch -->
-        <path pathLength="1" class="car-stroke" stroke-width="1.3" d="M103 118 Q107 92 142 91 Q177 90 180 118"/>
-        <!-- Rear wheel arch -->
-        <path pathLength="1" class="car-stroke" stroke-width="1.3" d="M412 118 Q415 92 450 91 Q485 90 488 118"/>
-        <!-- Front wheel -->
-        <circle pathLength="1" class="car-stroke" stroke-width="1.3" cx="142" cy="128" r="20"/>
-        <circle pathLength="1" class="car-stroke" stroke-width="1.1" cx="142" cy="128" r="7"/>
-        <!-- Rear wheel -->
-        <circle pathLength="1" class="car-stroke" stroke-width="1.3" cx="450" cy="128" r="20"/>
-        <circle pathLength="1" class="car-stroke" stroke-width="1.1" cx="450" cy="128" r="7"/>
-        <!-- Headlight -->
-        <path pathLength="1" class="car-stroke" stroke-width="1.1" d="M506 98 Q516 96 518 106 Q519 112 514 115"/>
-        <!-- Taillight -->
-        <path pathLength="1" class="car-stroke" stroke-width="1.1" d="M86 98 Q76 96 74 106 Q73 112 78 115"/>
-        <!-- Side mirror -->
-        <path pathLength="1" class="car-stroke" stroke-width="1.1" d="M424 58 L438 56 L440 67 L423 68 Z"/>
-        <!-- Door handles -->
-        <path pathLength="1" class="car-stroke" stroke-width="1.0" d="M224 98 L248 98"/>
-        <path pathLength="1" class="car-stroke" stroke-width="1.0" d="M340 98 L364 98"/>
-      </svg>
+    <!-- Car image -->
+    <div class="absolute bottom-0 left-0 right-0 pointer-events-none select-none overflow-hidden" style="height:55%;">
+      <img src="brand_assets/mazda-car.png" alt="" class="absolute bottom-0 right-0 h-full w-auto object-contain object-right-bottom" style="opacity:0; animation: car-fade 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s forwards; mask-image: linear-gradient(to right, transparent 0%, black 25%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 25%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
     </div>
 
     <!-- Wave divider -->
