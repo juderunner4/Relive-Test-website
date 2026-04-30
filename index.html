@@ -272,7 +272,7 @@
 
     /* ── Car hero animations ─────────────────────────────────────────────── */
     @keyframes car-back {
-      0%   { opacity: 0;    transform: translateX(100vw); }
+      0%   { opacity: 0;    transform: translateX(-100vw); }
       30%  { opacity: 0.20; }
       100% { opacity: 0.30; transform: translateX(0); }
     }
@@ -399,8 +399,8 @@
     <!-- Car scene -->
     <div class="absolute bottom-0 left-0 right-0 pointer-events-none select-none overflow-hidden" style="height:65%;">
 
-      <!-- Range Rover (back car — raised up, smaller, lower opacity) -->
-      <img src="brand_assets/range-rover.png" alt="" style="position:absolute; bottom:30%; right:2%; height:42%; width:auto; z-index:2; opacity:0; animation: car-back 1.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
+      <!-- Range Rover (back car — left side, raised, slides in from left) -->
+      <img src="brand_assets/range-rover.png" alt="" style="position:absolute; bottom:36%; left:8%; height:40%; width:auto; z-index:2; opacity:0; animation: car-back 1.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
 
       <!-- Mazda (front car) -->
       <img src="brand_assets/mazda-car.png" alt="" style="position:absolute; bottom:0; right:0; height:85%; width:auto; z-index:3; opacity:0; animation: car-front 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s forwards; mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
