@@ -349,6 +349,9 @@
       <div class="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] rounded-full bg-gold-400/4 blur-[100px]"></div>
     </div>
 
+    <!-- Full-height mist: covers left side top-to-bottom so text always readable -->
+    <div class="absolute inset-0 pointer-events-none" style="z-index:6; background: linear-gradient(to right, #0A0A0A 18%, rgba(10,10,10,0.60) 36%, rgba(10,10,10,0.10) 56%, transparent 72%);"></div>
+
     <div class="max-w-3xl mx-auto px-6 py-28 text-center relative z-10">
       <div class="inline-flex items-center gap-2 bg-gold-500/10 border border-gold-500/25 text-gold-400 text-xs font-medium px-3 py-1.5 rounded-full mb-6 tracking-[0.08em] uppercase">
         <span class="w-1.5 h-1.5 rounded-full bg-gold-400 animate-pulse"></span>
@@ -394,20 +397,13 @@
     </div>
 
     <!-- Car scene -->
-    <div class="absolute bottom-0 left-0 right-0 pointer-events-none select-none overflow-hidden" style="height:60%;">
+    <div class="absolute bottom-0 left-0 right-0 pointer-events-none select-none overflow-hidden" style="height:65%;">
 
-      <!-- Mist: fades left edge into background, lets cars breathe on the right -->
-      <div class="absolute inset-0" style="z-index:10; background: linear-gradient(to right, #0A0A0A 15%, rgba(10,10,10,0.55) 32%, rgba(10,10,10,0.08) 52%, transparent 68%);"></div>
-
-      <!-- Range Rover (back car — smaller, floated up, lower opacity) -->
-      <div class="absolute right-0 pointer-events-none" style="width:72%; bottom:18%; z-index:2;">
-        <img src="brand_assets/range-rover.png" alt="" class="absolute bottom-0 right-0 w-full h-auto" style="max-height:55%; object-fit:contain; object-position:right bottom; opacity:0; animation: car-back 1.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; mask-image: linear-gradient(to right, transparent 0%, black 18%, black 85%, transparent 100%), linear-gradient(to top, black 0%, black 55%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 18%, black 85%, transparent 100%), linear-gradient(to top, black 0%, black 55%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
-      </div>
+      <!-- Range Rover (back car — raised up, smaller, lower opacity) -->
+      <img src="brand_assets/range-rover.png" alt="" style="position:absolute; bottom:30%; right:2%; height:42%; width:auto; z-index:2; opacity:0; animation: car-back 1.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
 
       <!-- Mazda (front car) -->
-      <div class="absolute bottom-0 right-0 h-full" style="width:76%; z-index:3;">
-        <img src="brand_assets/mazda-car.png" alt="" class="absolute bottom-0 right-0 h-full w-auto object-contain object-right-bottom" style="opacity:0; animation: car-front 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s forwards; mask-image: linear-gradient(to right, transparent 0%, black 22%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 22%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
-      </div>
+      <img src="brand_assets/mazda-car.png" alt="" style="position:absolute; bottom:0; right:0; height:85%; width:auto; z-index:3; opacity:0; animation: car-front 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s forwards; mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
 
     </div>
 
