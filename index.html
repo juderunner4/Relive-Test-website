@@ -1415,6 +1415,30 @@
       document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
     })();
 
+    // ── Car animation replay on scroll back to hero ───────────────────────────
+    (function() {
+      var hero = document.querySelector('section.hero-bg');
+      var carLeft  = document.querySelector('img[src="brand_assets/range-rover.png"]');
+      var carFront = document.querySelector('img[src="brand_assets/mazda-car.png"]');
+      var leftAnim  = 'car-left 1.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards';
+      var frontAnim = 'car-front 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s forwards';
+      var firstLoad = true;
+      function replay(el, anim) {
+        el.style.animation = 'none';
+        el.style.opacity = '0';
+        el.offsetWidth; // force reflow
+        el.style.animation = anim;
+      }
+      var obs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+          if (firstLoad) { firstLoad = false; return; }
+          replay(carLeft, leftAnim);
+          replay(carFront, frontAnim);
+        }
+      }, { threshold: 0.3 });
+      obs.observe(hero);
+    })();
+
     // ── Hero parallax ─────────────────────────────────────────────────────────
     (function() {
       var orbs = document.querySelectorAll('.hero-bg .absolute.inset-0 > div');
