@@ -272,9 +272,9 @@
 
     /* ── Car hero animations ─────────────────────────────────────────────── */
     @keyframes car-left {
-      0%   { opacity: 0;    transform: translateX(-100vw) scaleX(-1); }
+      0%   { opacity: 0;    transform: translateX(-100vw); }
       30%  { opacity: 0.20; }
-      100% { opacity: 0.28; transform: translateX(0) scaleX(-1); }
+      100% { opacity: 0.28; transform: translateX(0); }
     }
     @keyframes car-front {
       0%   { opacity: 0;    transform: translateX(100vw); }
@@ -399,8 +399,8 @@
     <!-- Car scene -->
     <div class="absolute bottom-0 left-0 right-0 pointer-events-none select-none overflow-hidden" style="height:65%;">
 
-      <!-- Range Rover (left side, flipped to face right, slides in from left) -->
-      <img src="brand_assets/range-rover.png" alt="" style="position:absolute; bottom:28%; left:-4%; height:44%; width:auto; z-index:2; opacity:0; animation: car-left 1.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
+      <!-- Range Rover (left side, faces right toward Mazda, fades before overlap) -->
+      <img src="brand_assets/range-rover.png" alt="" style="position:absolute; bottom:34%; left:-4%; height:44%; width:auto; z-index:2; opacity:0; animation: car-left 1.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; mask-image: linear-gradient(to right, transparent 0%, black 10%, black 55%, transparent 78%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 55%, transparent 78%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
 
       <!-- Mazda (front car) -->
       <img src="brand_assets/mazda-car.png" alt="" style="position:absolute; bottom:0; right:0; height:85%; width:auto; z-index:3; opacity:0; animation: car-front 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s forwards; mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
