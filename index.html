@@ -384,15 +384,15 @@
 
       <!-- Trust badges -->
       <div class="flex flex-wrap gap-6 mt-10 pt-10 border-t border-gold-500/15 justify-center">
-        <div class="flex items-center gap-2 text-silver-400">
+        <div id="badge-1" class="flex items-center gap-2 text-silver-400" style="will-change:transform;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A454" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
           <span class="text-sm font-medium">Mobile Service</span>
         </div>
-        <div class="flex items-center gap-2 text-silver-400">
+        <div id="badge-2" class="flex items-center gap-2 text-silver-400" style="will-change:transform;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A454" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span class="text-sm font-medium">Premium Products</span>
         </div>
-        <div class="flex items-center gap-2 text-silver-400">
+        <div id="badge-3" class="flex items-center gap-2 text-silver-400" style="will-change:transform;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A454" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <span class="text-sm font-medium">Satisfaction Guaranteed</span>
         </div>
@@ -1450,6 +1450,27 @@
         });
       }
       window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+
+    // ── Badge float / scroll lag ───────────────────────────────────────────────
+    (function() {
+      var badges = [
+        { el: document.getElementById('badge-1'), speed: 0.055, y: 0 },
+        { el: document.getElementById('badge-2'), speed: 0.038, y: 0 },
+        { el: document.getElementById('badge-3'), speed: 0.065, y: 0 },
+      ];
+      var scrollY = 0;
+      window.addEventListener('scroll', function() { scrollY = window.scrollY; }, { passive: true });
+      function lerp(a, b, t) { return a + (b - a) * t; }
+      function tick() {
+        badges.forEach(function(b) {
+          var target = scrollY * b.speed;
+          b.y = lerp(b.y, target, 0.08);
+          b.el.style.transform = 'translateY(' + b.y.toFixed(2) + 'px)';
+        });
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
     })();
 
     // Screenshot helper: ?y=1000 scrolls to that position
