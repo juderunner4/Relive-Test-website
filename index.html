@@ -271,10 +271,10 @@
     .reveal-d4 { transition-delay: 0.40s; }
 
     /* ── Car hero animations ─────────────────────────────────────────────── */
-    @keyframes car-back {
-      0%   { opacity: 0;    transform: translateX(-100vw); }
+    @keyframes car-left {
+      0%   { opacity: 0;    transform: translateX(-100vw) scaleX(-1); }
       30%  { opacity: 0.20; }
-      100% { opacity: 0.30; transform: translateX(0); }
+      100% { opacity: 0.28; transform: translateX(0) scaleX(-1); }
     }
     @keyframes car-front {
       0%   { opacity: 0;    transform: translateX(100vw); }
@@ -349,8 +349,8 @@
       <div class="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] rounded-full bg-gold-400/4 blur-[100px]"></div>
     </div>
 
-    <!-- Full-height mist: covers left side top-to-bottom so text always readable -->
-    <div class="absolute inset-0 pointer-events-none" style="z-index:6; background: linear-gradient(to right, #0A0A0A 18%, rgba(10,10,10,0.60) 36%, rgba(10,10,10,0.10) 56%, transparent 72%);"></div>
+    <!-- Full-height mist: dark vignette on both sides, clear in the center -->
+    <div class="absolute inset-0 pointer-events-none" style="z-index:6; background: linear-gradient(to right, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.45) 18%, transparent 34%, transparent 66%, rgba(10,10,10,0.45) 82%, rgba(10,10,10,0.92) 100%);"></div>
 
     <div class="max-w-3xl mx-auto px-6 py-28 text-center relative z-10">
       <div class="inline-flex items-center gap-2 bg-gold-500/10 border border-gold-500/25 text-gold-400 text-xs font-medium px-3 py-1.5 rounded-full mb-6 tracking-[0.08em] uppercase">
@@ -399,8 +399,8 @@
     <!-- Car scene -->
     <div class="absolute bottom-0 left-0 right-0 pointer-events-none select-none overflow-hidden" style="height:65%;">
 
-      <!-- Range Rover (back car — left side, raised, slides in from left) -->
-      <img src="brand_assets/range-rover.png" alt="" style="position:absolute; bottom:36%; left:8%; height:40%; width:auto; z-index:2; opacity:0; animation: car-back 1.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
+      <!-- Range Rover (left side, flipped to face right, slides in from left) -->
+      <img src="brand_assets/range-rover.png" alt="" style="position:absolute; bottom:28%; left:-4%; height:44%; width:auto; z-index:2; opacity:0; animation: car-left 1.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
 
       <!-- Mazda (front car) -->
       <img src="brand_assets/mazda-car.png" alt="" style="position:absolute; bottom:0; right:0; height:85%; width:auto; z-index:3; opacity:0; animation: car-front 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s forwards; mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
