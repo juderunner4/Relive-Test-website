@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Relive Mobile Detailing | Lynchburg, VA</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -281,6 +282,15 @@
       30%  { opacity: 0.30; }
       100% { opacity: 0.55; transform: translateX(0); }
     }
+
+    /* ── About section staggered fade-in-up ──────────────────────────────── */
+    .about-reveal { opacity: 0; }
+    .about-reveal.visible { animation: fadeUp 0.75s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .about-d1 { animation-delay: 0.05s; }
+    .about-d2 { animation-delay: 0.18s; }
+    .about-d3 { animation-delay: 0.30s; }
+    .about-d4 { animation-delay: 0.42s; }
+    .about-d5 { animation-delay: 0.55s; }
 
     /* ── Booking section staggered fade-in-up ────────────────────────────── */
     @keyframes fadeUp {
@@ -676,38 +686,62 @@
   </section>
 
   <!-- ABOUT -->
-  <section id="about" class="light-section py-24">
-    <div class="max-w-4xl mx-auto px-6">
+  <section id="about" class="py-24" style="position:relative; overflow:hidden; background:#0A0A0A; color:white;">
+
+    <!-- HLS Video background -->
+    <div style="position:absolute; inset:0; z-index:0; pointer-events:none;">
+      <video id="about-video" autoplay muted loop playsinline
+        poster="https://images.unsplash.com/photo-1647356191320-d7a1f80ca777?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+        style="width:100%; height:100%; object-fit:cover; opacity:0.22;"></video>
+      <!-- Dark overlay so text stays readable -->
+      <div style="position:absolute; inset:0; background: rgba(10,10,10,0.62); backdrop-filter:blur(2px);"></div>
+    </div>
+
+    <!-- Decorative gold gradient orbs -->
+    <div style="position:absolute; top:-20%; left:5%; width:520px; height:520px; border-radius:50%; background:rgba(201,164,84,0.08); filter:blur(120px); mix-blend-mode:screen; pointer-events:none; z-index:0;"></div>
+    <div style="position:absolute; bottom:-10%; right:8%; width:420px; height:420px; border-radius:50%; background:rgba(201,164,84,0.05); filter:blur(120px); mix-blend-mode:screen; pointer-events:none; z-index:0;"></div>
+
+    <div class="max-w-4xl mx-auto px-6" style="position:relative; z-index:1;">
       <div class="grid lg:grid-cols-2 gap-14 items-center">
+
+        <!-- Left: Text -->
         <div>
-          <div class="inline-block text-gold-600 text-xs font-semibold tracking-[0.14em] uppercase mb-3">About Relive</div>
-          <h2 class="font-display text-onyx-900 mb-6" style="font-size: clamp(2rem, 4.5vw, 3rem); letter-spacing:-0.03em;">
-            Built on <em class="text-gold-600 not-italic">Passion</em><br>for the Craft
+          <div class="inline-block text-gold-500 text-xs font-semibold tracking-[0.14em] uppercase mb-3 about-reveal about-d1">About Relive</div>
+          <h2 class="font-display text-white mb-6 about-reveal about-d2" style="font-size: clamp(2rem, 4.5vw, 3rem); letter-spacing:-0.03em;">
+            Built on <em class="text-gold-500 not-italic">Passion</em><br>for the Craft
           </h2>
-          <p class="text-onyx-600 text-base leading-[1.85] mb-5">
+          <p class="text-silver-400 text-base leading-[1.85] mb-5 about-reveal about-d3">
             I am an Aeronautics student at Liberty University with two years of experience washing cars and general aviation aircraft in California. I started Relive from a genuine passion for detailing and a desire to turn my experience into a professional, reliable service.
           </p>
-          <p class="text-onyx-600 text-base leading-[1.85] mb-8">
+          <p class="text-silver-400 text-base leading-[1.85] mb-8 about-reveal about-d4">
             I approach every job with a focus on quality, consistency, and attention to detail. At Relive Mobile Detailing, my goal is to provide a level of care and trust that you can always rely on.
           </p>
-          <a href="tel:4345151695" class="inline-flex items-center gap-2.5 font-semibold text-sm text-gold-600 hover:text-gold-500 transition-colors duration-200 group">
-            Let's talk — (434) 515-1695
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform duration-200"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
+          <div class="flex flex-wrap gap-4 about-reveal about-d5">
+            <a href="#contact" class="gold-btn inline-flex items-center gap-2.5 font-semibold text-sm px-6 py-3 rounded-xl shadow-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400">
+              Book Now
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="tel:4345151695" class="inline-flex items-center gap-2.5 font-medium text-sm text-silver-400 hover:text-gold-400 transition-colors duration-200 group px-4 py-3 rounded-xl hover:bg-white/5">
+              (434) 515-1695
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform duration-200"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
         </div>
+
         <!-- Photo -->
-        <div class="flex justify-center lg:justify-end">
+        <div class="flex justify-center lg:justify-end about-reveal about-d3">
           <div class="relative">
-            <div class="w-72 h-96 rounded-2xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.18),0_2px_8px_rgba(0,0,0,0.10)]" style="border: 3px solid rgba(201,164,84,0.25);">
+            <div class="w-72 h-96 rounded-2xl overflow-hidden" style="box-shadow: 0 8px 48px rgba(201,164,84,0.18), 0 2px 12px rgba(0,0,0,0.5); border: 2px solid rgba(201,164,84,0.30);">
               <img src="brand_assets/about-photo.png" alt="Jude — Relive Mobile Detailing" class="w-full h-full object-cover object-top"/>
             </div>
-            <!-- Gold accent -->
-            <div class="absolute -bottom-4 -left-4 bg-onyx-900 border border-gold-500/30 rounded-xl px-5 py-3 shadow-card">
+            <!-- Gold accent card -->
+            <div class="absolute -bottom-4 -left-4 bg-onyx-900/90 border border-gold-500/30 rounded-xl px-5 py-3 shadow-card backdrop-blur-sm">
               <div class="text-gold-500 text-xs font-semibold tracking-[0.10em] uppercase mb-0.5">Owner &amp; Detailer</div>
               <div class="font-display text-white text-base font-semibold" style="letter-spacing:-0.01em;">Jude Tenorio</div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
@@ -1473,22 +1507,35 @@
       window.addEventListener('scroll', onScroll, { passive: true });
     })();
 
+    // ── About section: HLS video + staggered reveal ───────────────────────────
+    (function() {
+      var ABOUT_SRC = 'https://stream.mux.com/T6oQJQ02cQ6N01TR6iHwZkKFkbepS34dkkIc9iukgy400g.m3u8';
+      var av = document.getElementById('about-video');
+      if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+        var aHls = new Hls(); aHls.loadSource(ABOUT_SRC); aHls.attachMedia(av);
+      } else if (av.canPlayType('application/vnd.apple.mpegurl')) { av.src = ABOUT_SRC; }
+
+      var aboutSection = document.getElementById('about');
+      var aboutItems = aboutSection.querySelectorAll('.about-reveal');
+      var aboutObs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+          aboutItems.forEach(function(el) { el.classList.remove('visible'); void el.offsetWidth; el.classList.add('visible'); });
+        } else {
+          aboutItems.forEach(function(el) { el.classList.remove('visible'); });
+        }
+      }, { threshold: 0.15 });
+      aboutObs.observe(aboutSection);
+    })();
+
     // ── Booking section: HLS video + staggered reveal ─────────────────────────
     (function() {
       var HLS_SRC = 'https://stream.mux.com/9JXDljEVWYwWu01PUkAemafDugK89o01BR6zqJ3aS9u00A.m3u8';
       var video = document.getElementById('contact-video');
-      var script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js';
-      script.onload = function() {
-        if (Hls.isSupported()) {
-          var hls = new Hls();
-          hls.loadSource(HLS_SRC);
-          hls.attachMedia(video);
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = HLS_SRC; // Safari native HLS
-        }
-      };
-      document.head.appendChild(script);
+      if (Hls.isSupported()) {
+        var hls = new Hls(); hls.loadSource(HLS_SRC); hls.attachMedia(video);
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = HLS_SRC;
+      }
 
       // Staggered reveal
       var section = document.getElementById('contact');
