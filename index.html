@@ -6,6 +6,7 @@
   <title>Relive Mobile Detailing | Lynchburg, VA</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -364,17 +365,25 @@
 
   <!-- HERO -->
   <section class="hero-bg min-h-screen pt-16 flex items-center relative overflow-hidden">
+
+    <!-- Spline 3D interactive mouse scene (lowest layer) -->
+    <spline-viewer url="https://prod.spline.design/Slk6b8kz3LRlKiyk/scene.splinecode"
+      style="position:absolute; inset:0; width:100%; height:100%; z-index:1; opacity:0.55;">
+    </spline-viewer>
+    <!-- Dark overlay so Spline doesn't overpower the hero content -->
+    <div class="absolute inset-0 pointer-events-none" style="z-index:2; background:rgba(10,10,10,0.55);"></div>
+
     <!-- Background glows -->
-    <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute inset-0 pointer-events-none" style="z-index:3;">
       <div class="absolute top-1/3 left-1/4 w-[500px] h-[500px] rounded-full bg-gold-500/5 blur-[120px]"></div>
       <div class="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] rounded-full bg-gold-400/4 blur-[100px]"></div>
     </div>
 
     <!-- Full-height mist: dark vignette on both sides, clear in the center -->
-    <div class="absolute inset-0 pointer-events-none" style="z-index:6; background: linear-gradient(to right, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.45) 18%, transparent 34%, transparent 66%, rgba(10,10,10,0.45) 82%, rgba(10,10,10,0.92) 100%);"></div>
+    <div class="absolute inset-0 pointer-events-none" style="z-index:8; background: linear-gradient(to right, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.45) 18%, transparent 34%, transparent 66%, rgba(10,10,10,0.45) 82%, rgba(10,10,10,0.92) 100%);"></div>
 
     <!-- Top light beam -->
-    <div class="absolute inset-0 pointer-events-none" style="z-index:5; background: radial-gradient(ellipse 60% 55% at 50% -5%, rgba(201,164,84,0.13) 0%, rgba(201,164,84,0.04) 45%, transparent 70%);"></div>
+    <div class="absolute inset-0 pointer-events-none" style="z-index:7; background: radial-gradient(ellipse 60% 55% at 50% -5%, rgba(201,164,84,0.13) 0%, rgba(201,164,84,0.04) 45%, transparent 70%);"></div>
 
     <div class="max-w-3xl mx-auto px-6 py-28 text-center relative z-10">
       <div class="inline-flex items-center gap-2 bg-gold-500/10 border border-gold-500/25 text-gold-400 text-xs font-medium px-3 py-1.5 rounded-full mb-6 tracking-[0.08em] uppercase">
@@ -421,7 +430,7 @@
     </div>
 
     <!-- Car scene -->
-    <div id="hero-cars" class="absolute bottom-0 left-0 right-0 pointer-events-none select-none overflow-hidden" style="height:65%;">
+    <div id="hero-cars" class="absolute bottom-0 left-0 right-0 pointer-events-none select-none overflow-hidden" style="height:65%; z-index:9;">
 
       <!-- Range Rover -->
       <img id="car-rover" src="brand_assets/range-rover.png" alt="" style="position:absolute; bottom:34%; left:-4%; height:44%; width:auto; z-index:2; opacity:0; animation: car-left 2.6s cubic-bezier(0.19,1,0.22,1) 0.1s forwards; mask-image: linear-gradient(to right, transparent 0%, black 12%, black 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 100%), linear-gradient(to top, black 0%, black 60%, transparent 100%); mask-composite: intersect; -webkit-mask-composite: source-in;"/>
