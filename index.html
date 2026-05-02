@@ -314,8 +314,9 @@
 </head>
 <body>
 
-  <!-- Gold cursor glow -->
-  <div id="cursor-glow" style="position:fixed; pointer-events:none; z-index:9999; width:700px; height:700px; border-radius:50%; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(201,164,84,0.13) 0%, rgba(201,164,84,0.05) 40%, transparent 70%); opacity:0; transition:opacity 0.4s ease; will-change:transform;"></div>
+  <!-- Gold cursor glow: tight head + trailing blob -->
+  <div id="cursor-head" style="position:fixed; pointer-events:none; z-index:9999; width:180px; height:180px; border-radius:50%; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(201,164,84,0.22) 0%, rgba(201,164,84,0.08) 45%, transparent 70%); opacity:0; transition:opacity 0.4s ease; will-change:left,top;"></div>
+  <div id="cursor-trail" style="position:fixed; pointer-events:none; z-index:9998; width:320px; height:320px; border-radius:50%; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(201,164,84,0.10) 0%, rgba(201,164,84,0.03) 50%, transparent 72%); opacity:0; transition:opacity 0.5s ease; will-change:left,top,transform;"></div>
 
   <!-- NAV -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50 shadow-nav">
@@ -1513,28 +1514,51 @@
       obs.observe(section);
     })();
 
-    // ── Gold cursor glow ───────────────────────────────────────────────────────
+    // ── Gold cursor glow — teardrop (fast head + slow trailing blob) ──────────
     (function() {
-      var glow = document.getElementById('cursor-glow');
-      var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-      var tx = cx, ty = cy;
+      var head  = document.getElementById('cursor-head');
+      var trail = document.getElementById('cursor-trail');
+      var tx = window.innerWidth / 2, ty = window.innerHeight / 2;
+      var hx = tx, hy = ty;  // head  — fast
+      var bx = tx, by = ty;  // blob  — slow
       var visible = false;
 
       document.addEventListener('mousemove', function(e) {
         tx = e.clientX; ty = e.clientY;
-        if (!visible) { glow.style.opacity = '1'; visible = true; }
+        if (!visible) {
+          head.style.opacity = '1';
+          trail.style.opacity = '1';
+          visible = true;
+        }
       }, { passive: true });
 
       document.addEventListener('mouseleave', function() {
-        glow.style.opacity = '0'; visible = false;
+        head.style.opacity = '0';
+        trail.style.opacity = '0';
+        visible = false;
       });
 
       function lerp(a, b, t) { return a + (b - a) * t; }
+
       function tick() {
-        cx = lerp(cx, tx, 0.1);
-        cy = lerp(cy, ty, 0.1);
-        glow.style.left = cx.toFixed(1) + 'px';
-        glow.style.top  = cy.toFixed(1) + 'px';
+        hx = lerp(hx, tx, 0.18);
+        hy = lerp(hy, ty, 0.18);
+        bx = lerp(bx, tx, 0.055);
+        by = lerp(by, ty, 0.055);
+
+        head.style.left = hx.toFixed(1) + 'px';
+        head.style.top  = hy.toFixed(1) + 'px';
+
+        // Stretch trail toward the head — teardrop effect
+        var dx = hx - bx, dy = hy - by;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var stretch = Math.min(1 + dist * 0.018, 2.6);
+        var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+        trail.style.left = bx.toFixed(1) + 'px';
+        trail.style.top  = by.toFixed(1) + 'px';
+        trail.style.transform = 'translate(-50%,-50%) rotate(' + angle + 'deg) scaleX(' + stretch.toFixed(3) + ')';
+
         requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
