@@ -314,9 +314,6 @@
 </head>
 <body>
 
-  <!-- Gold cursor glow: tight head + trailing blob -->
-  <div id="cursor-head" style="position:fixed; pointer-events:none; z-index:9999; width:180px; height:180px; border-radius:50%; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(201,164,84,0.22) 0%, rgba(201,164,84,0.08) 45%, transparent 70%); opacity:0; transition:opacity 0.4s ease; will-change:left,top;"></div>
-  <div id="cursor-trail" style="position:fixed; pointer-events:none; z-index:9998; width:320px; height:320px; border-radius:50%; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(201,164,84,0.10) 0%, rgba(201,164,84,0.03) 50%, transparent 72%); opacity:0; transition:opacity 0.5s ease; will-change:left,top,transform;"></div>
 
   <!-- NAV -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50 shadow-nav">
@@ -1514,51 +1511,61 @@
       obs.observe(section);
     })();
 
-    // ── Gold cursor glow — teardrop (fast head + slow trailing blob) ──────────
+    // ── Gold cursor snake trail (canvas chain) ────────────────────────────────
     (function() {
-      var head  = document.getElementById('cursor-head');
-      var trail = document.getElementById('cursor-trail');
-      var tx = window.innerWidth / 2, ty = window.innerHeight / 2;
-      var hx = tx, hy = ty;  // head  — fast
-      var bx = tx, by = ty;  // blob  — slow
-      var visible = false;
+      var canvas = document.createElement('canvas');
+      canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;';
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      document.body.insertBefore(canvas, document.body.firstChild);
+      var ctx = canvas.getContext('2d');
+
+      window.addEventListener('resize', function() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      var N = 28;
+      var pts = [];
+      for (var i = 0; i < N; i++) pts.push({ x: -400, y: -400 });
+      var mx = -400, my = -400, visible = false;
 
       document.addEventListener('mousemove', function(e) {
-        tx = e.clientX; ty = e.clientY;
-        if (!visible) {
-          head.style.opacity = '1';
-          trail.style.opacity = '1';
-          visible = true;
-        }
+        mx = e.clientX; my = e.clientY; visible = true;
       }, { passive: true });
-
-      document.addEventListener('mouseleave', function() {
-        head.style.opacity = '0';
-        trail.style.opacity = '0';
-        visible = false;
-      });
+      document.addEventListener('mouseleave', function() { visible = false; });
 
       function lerp(a, b, t) { return a + (b - a) * t; }
 
       function tick() {
-        hx = lerp(hx, tx, 0.18);
-        hy = lerp(hy, ty, 0.18);
-        bx = lerp(bx, tx, 0.055);
-        by = lerp(by, ty, 0.055);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        head.style.left = hx.toFixed(1) + 'px';
-        head.style.top  = hy.toFixed(1) + 'px';
+        if (visible) {
+          // Chain: head tracks mouse, each segment tracks the one ahead
+          pts[0].x = lerp(pts[0].x, mx, 0.22);
+          pts[0].y = lerp(pts[0].y, my, 0.22);
+          for (var i = 1; i < N; i++) {
+            pts[i].x = lerp(pts[i].x, pts[i - 1].x, 0.28);
+            pts[i].y = lerp(pts[i].y, pts[i - 1].y, 0.28);
+          }
 
-        // Stretch trail toward the head — teardrop effect
-        var dx = hx - bx, dy = hy - by;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        var stretch = Math.min(1 + dist * 0.018, 2.6);
-        var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+          // Draw back-to-front so head renders on top
+          for (var i = N - 1; i >= 0; i--) {
+            var t = i / (N - 1);              // 0 = head, 1 = tail
+            var r = lerp(72, 6, t);           // radius: large at head, tiny at tail
+            var a = lerp(0.20, 0.0, t * t);  // opacity: bright head, fades quadratically
 
-        trail.style.left = bx.toFixed(1) + 'px';
-        trail.style.top  = by.toFixed(1) + 'px';
-        trail.style.transform = 'translate(-50%,-50%) rotate(' + angle + 'deg) scaleX(' + stretch.toFixed(3) + ')';
+            var g = ctx.createRadialGradient(pts[i].x, pts[i].y, 0, pts[i].x, pts[i].y, r);
+            g.addColorStop(0,   'rgba(201,164,84,' + (a * 1.4).toFixed(3) + ')');
+            g.addColorStop(0.45,'rgba(201,164,84,' + a.toFixed(3) + ')');
+            g.addColorStop(1,   'rgba(201,164,84,0)');
 
+            ctx.beginPath();
+            ctx.arc(pts[i].x, pts[i].y, r, 0, Math.PI * 2);
+            ctx.fillStyle = g;
+            ctx.fill();
+          }
+        }
         requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
