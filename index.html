@@ -6,7 +6,6 @@
   <title>Relive Mobile Detailing | Lynchburg, VA</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
-  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -315,6 +314,9 @@
 </head>
 <body>
 
+  <!-- Gold cursor glow -->
+  <div id="cursor-glow" style="position:fixed; pointer-events:none; z-index:9999; width:700px; height:700px; border-radius:50%; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(201,164,84,0.13) 0%, rgba(201,164,84,0.05) 40%, transparent 70%); opacity:0; transition:opacity 0.4s ease; will-change:transform;"></div>
+
   <!-- NAV -->
   <nav class="nav-glass fixed top-0 left-0 right-0 z-50 shadow-nav">
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -365,12 +367,6 @@
 
   <!-- HERO -->
   <section class="hero-bg min-h-screen pt-16 flex items-center relative overflow-hidden">
-
-    <!-- Spline 3D gold mouse effect -->
-    <spline-viewer url="https://prod.spline.design/Slk6b8kz3LRlKiyk/scene.splinecode"
-      style="position:absolute; inset:0; width:100%; height:100%; z-index:1; opacity:0.6; filter: hue-rotate(-79deg) saturate(0.5) brightness(1.15);">
-    </spline-viewer>
-    <div class="absolute inset-0 pointer-events-none" style="z-index:2; background:rgba(10,10,10,0.45);"></div>
 
     <!-- Background glows -->
     <div class="absolute inset-0 pointer-events-none" style="z-index:3;">
@@ -1515,6 +1511,33 @@
         }
       }, { threshold: 0.15 });
       obs.observe(section);
+    })();
+
+    // ── Gold cursor glow ───────────────────────────────────────────────────────
+    (function() {
+      var glow = document.getElementById('cursor-glow');
+      var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+      var tx = cx, ty = cy;
+      var visible = false;
+
+      document.addEventListener('mousemove', function(e) {
+        tx = e.clientX; ty = e.clientY;
+        if (!visible) { glow.style.opacity = '1'; visible = true; }
+      }, { passive: true });
+
+      document.addEventListener('mouseleave', function() {
+        glow.style.opacity = '0'; visible = false;
+      });
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+      function tick() {
+        cx = lerp(cx, tx, 0.1);
+        cy = lerp(cy, ty, 0.1);
+        glow.style.left = cx.toFixed(1) + 'px';
+        glow.style.top  = cy.toFixed(1) + 'px';
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
     })();
 
     // Screenshot helper: ?y=1000 scrolls to that position
