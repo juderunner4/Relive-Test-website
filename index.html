@@ -1511,7 +1511,7 @@
       obs.observe(section);
     })();
 
-    // ── Gold cursor snake trail (canvas chain) ────────────────────────────────
+    // ── Gold cursor snake trail ────────────────────────────────────────────────
     (function() {
       var canvas = document.createElement('canvas');
       canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;';
@@ -1537,11 +1537,28 @@
 
       function lerp(a, b, t) { return a + (b - a) * t; }
 
+      function buildPath() {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (var i = 1; i < N - 2; i++) {
+          var mx2 = (pts[i].x + pts[i + 1].x) / 2;
+          var my2 = (pts[i].y + pts[i + 1].y) / 2;
+          ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx2, my2);
+        }
+        ctx.quadraticCurveTo(pts[N - 2].x, pts[N - 2].y, pts[N - 1].x, pts[N - 1].y);
+      }
+
+      function makeGrad(alpha) {
+        var g = ctx.createLinearGradient(pts[0].x, pts[0].y, pts[N - 1].x, pts[N - 1].y);
+        g.addColorStop(0, 'rgba(201,164,84,' + alpha + ')');
+        g.addColorStop(1, 'rgba(201,164,84,0)');
+        return g;
+      }
+
       function tick() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         if (visible) {
-          // Chain: head tracks mouse, each segment tracks the one ahead
           pts[0].x = lerp(pts[0].x, mx, 0.22);
           pts[0].y = lerp(pts[0].y, my, 0.22);
           for (var i = 1; i < N; i++) {
@@ -1549,22 +1566,24 @@
             pts[i].y = lerp(pts[i].y, pts[i - 1].y, 0.28);
           }
 
-          // Draw back-to-front so head renders on top
-          for (var i = N - 1; i >= 0; i--) {
-            var t = i / (N - 1);              // 0 = head, 1 = tail
-            var r = lerp(72, 6, t);           // radius: large at head, tiny at tail
-            var a = lerp(0.20, 0.0, t * t);  // opacity: bright head, fades quadratically
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
 
-            var g = ctx.createRadialGradient(pts[i].x, pts[i].y, 0, pts[i].x, pts[i].y, r);
-            g.addColorStop(0,   'rgba(201,164,84,' + (a * 1.4).toFixed(3) + ')');
-            g.addColorStop(0.45,'rgba(201,164,84,' + a.toFixed(3) + ')');
-            g.addColorStop(1,   'rgba(201,164,84,0)');
+          // Outer glow
+          buildPath(); ctx.strokeStyle = makeGrad(0.05); ctx.lineWidth = 52; ctx.stroke();
+          // Mid glow
+          buildPath(); ctx.strokeStyle = makeGrad(0.10); ctx.lineWidth = 22; ctx.stroke();
+          // Core line
+          buildPath(); ctx.strokeStyle = makeGrad(0.28); ctx.lineWidth = 4;  ctx.stroke();
 
-            ctx.beginPath();
-            ctx.arc(pts[i].x, pts[i].y, r, 0, Math.PI * 2);
-            ctx.fillStyle = g;
-            ctx.fill();
-          }
+          // Head dot
+          var hg = ctx.createRadialGradient(pts[0].x, pts[0].y, 0, pts[0].x, pts[0].y, 38);
+          hg.addColorStop(0, 'rgba(201,164,84,0.22)');
+          hg.addColorStop(1, 'rgba(201,164,84,0)');
+          ctx.beginPath();
+          ctx.arc(pts[0].x, pts[0].y, 38, 0, Math.PI * 2);
+          ctx.fillStyle = hg;
+          ctx.fill();
         }
         requestAnimationFrame(tick);
       }
