@@ -308,7 +308,8 @@
     .cal-day.avail { color:#F0EDE6; cursor:pointer; }
     .cal-day.avail:hover { background:rgba(201,164,84,0.18); color:#C9A454; }
     .cal-day.selected { background:#C9A454; color:#0A0A0A; font-weight:700; }
-    .cal-day.is-today { color:#C9A454; font-weight:600; }
+    .cal-day.is-today { font-weight:700; outline: 1.5px solid rgba(201,164,84,0.55); outline-offset:-2px; border-radius:0.45rem; }
+    .cal-day.is-today:not(.avail):not(.selected) { color:#C9A454; }
 
   </style>
 </head>
@@ -1309,7 +1310,7 @@
         cell.className   = 'cal-day';
         if (key === calSelected)                                   cell.classList.add('selected');
         else if (availabilityData[key] && dateObj >= today)        cell.classList.add('avail');
-        else if (dateObj.getTime() === today.getTime())            cell.classList.add('is-today');
+        if (dateObj.getTime() === today.getTime())                 cell.classList.add('is-today');
         if (availabilityData[key] && dateObj >= today) {
           (function(k) {
             cell.addEventListener('click', function() {
