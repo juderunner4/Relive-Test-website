@@ -1279,9 +1279,12 @@
       var out = {};
       Object.keys(raw).forEach(function(rawKey) {
         // Normalize date key → "YYYY-MM-DD"
+        // Slice the date part directly from ISO strings to avoid timezone conversion
         var dateKey;
         if (/^\d{4}-\d{2}-\d{2}$/.test(rawKey)) {
           dateKey = rawKey;
+        } else if (/^\d{4}-\d{2}-\d{2}T/.test(rawKey)) {
+          dateKey = rawKey.substring(0, 10);
         } else {
           var d = new Date(rawKey);
           if (!isNaN(d.getTime())) {
